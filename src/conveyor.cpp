@@ -15,9 +15,13 @@ Conveyor::Conveyor(int Nmachines_count, int Ntypes_count) {
   }
 }
 
-int Conveyor::getTypesCount(){
+int Conveyor::getTypesCount() {
   return types_count;
 }
+
+void Conveyor::parseTimeConfig(int **config) {
+}
+
 
 void Conveyor::printStatus() {
   clearSreen();

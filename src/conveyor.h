@@ -14,6 +14,7 @@ public:
 
   int getTypesCount();
   void printStatus();
+  void parseTimeConfig(int **timeConfig);
 };
 
 #endif
