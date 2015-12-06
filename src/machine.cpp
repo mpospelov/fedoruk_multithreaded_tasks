@@ -2,7 +2,12 @@
 
 void Machine::init(Conveyor *conveyor) {
   this -> conveyor = conveyor;
-  for(int i = 0; i < conveyor -> getTypesCount(); ++i) {
-    // pthread_mutex_init(locks[i], NULL);
+  int locks_count = conveyor -> getTypesCount();
+  std::cout << "1\n";
+  locks = new pthread_mutex_t*[locks_count];
+
+  for(int i = 0; i < locks_count; ++i) {
+    locks[i] = new pthread_mutex_t;
+    pthread_mutex_init(locks[i], NULL);
   }
 }

@@ -2,6 +2,8 @@
 #define MACHINE_H_INCLUDED_
 
 #include <pthread.h>
+#include <stdlib.h>
+#include <iostream>
 #include "conveyor.h"
 class Conveyor;
 
