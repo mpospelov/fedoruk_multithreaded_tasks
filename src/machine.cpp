@@ -4,18 +4,28 @@ void Machine::init(Conveyor *conveyor, int id) {
   Mconveyor = conveyor;
   Mid = id;
   Mtypes_count = Mconveyor -> getTypesCount();
-  Mlocks = new pthread_mutex_t*[Mtypes_count];
-
-  for(int i = 0; i < Mtypes_count; ++i) {
-    Mlocks[i] = new pthread_mutex_t;
-    pthread_mutex_init(Mlocks[i], NULL);
-  }
+  Mdevice_lock = new pthread_mutex_t;
+  pthread_mutex_init(Mdevice_lock, NULL);
 }
 
 void Machine::setTimeConfig(int *timeConfig) {
   Mtimes_config = new int[Mtypes_count];
 
   memcpy(Mtimes_config, timeConfig, sizeof(int) * Mtypes_count);
+}
+
+void Machine::setNextMachine(Machine *machine) {
+  Mnext_machine = machine;
+}
+
+void Machine::handle(int device) {
+  pthread_mutex_lock(Mdevice_lock);
+  Mdevice_queue.push(device);
+  pthread_mutex_unlock(Mdevice_lock);
+}
+
+int Machine::timeForHandle(int device) {
+  return Mtimes_config[device];
 }
 
 void Machine::launch() {
@@ -30,11 +40,29 @@ void Machine::launch() {
   }
 }
 
+bool Machine::isLast() {
+  return Mnext_machine == NULL;
+}
+
+int Machine::id(){
+  return Mid;
+}
+
 void *Machine::loop(void) {
-  Mconveyor -> Mprinter -> print("Machine #" + std::to_string(Mid) + " launched!\n");
   while(1) {
-    Mconveyor -> Mprinter -> print("Hi from Machine #" + std::to_string(Mid) + "\n");
-    sleep(1);
+    if(!Mdevice_queue.empty()) {
+      int device = Mdevice_queue.front();
+      sleep(timeForHandle(device));
+      Mdevice_queue.pop();
+      if(isLast()){
+        Mconveyor -> finish(device);
+      } else {
+        Mnext_machine -> handle(device);
+        Mconveyor -> printStatus();
+      }
+    } else {
+      sleep(1);
+    }
   }
   return NULL;
 };
@@ -43,8 +71,7 @@ void *Machine::loop_helper(void *context){
   return ((Machine *)context) -> loop();
 };
 
-char* Machine::status() {
-  char *result;
-
-  return "";
+std::string Machine::status() {
+  return "Q: " + std::to_string(Mdevice_queue.size()) + " | "
+         "R: " + std::to_string(!Mdevice_queue.empty());
 }

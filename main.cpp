@@ -26,5 +26,12 @@ int main(int argc, char **argv) {
   conveyor -> parseTimeConfig(timeConfig);
   conveyor -> printStatus();
   conveyor -> launch();
+
+  int passed_device;
+  while(std::cin >> passed_device) {
+    conveyor -> workOn(passed_device);
+  }
+
+  pthread_join(*(conveyor -> Mprinter -> Mtid_p), NULL);
   return 0;
 }

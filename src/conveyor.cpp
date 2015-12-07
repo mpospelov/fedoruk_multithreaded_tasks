@@ -1,12 +1,9 @@
 #include "conveyor.h"
 #include <iostream>
 
-void Conveyor::clearSreen(){
-  std::cout << std::endl;
-  system("clear");
-}
-
 Conveyor::Conveyor(int machines_count, int types_count) {
+  Mworking_on_count = 0;
+  Mfinished_device_count = 0;
   Mprinter = new Printer;
   Mtypes_count = types_count;
   Mmachines_count = machines_count;
@@ -14,6 +11,19 @@ Conveyor::Conveyor(int machines_count, int types_count) {
   for(int i = 0; i < machines_count; ++i){
     Mmachines[i].init(this, i);
   }
+  for(int i = 1; i < machines_count; ++i) {
+    Mmachines[i - 1].setNextMachine(&Mmachines[i]);
+  }
+}
+
+void Conveyor::workOn(int device) {
+  Mworking_on_count ++;
+  Mmachines[0].handle(device);
+}
+
+void Conveyor::finish(int device) {
+  Mworking_on_count --;
+  Mfinished_device_count ++;
 }
 
 int Conveyor::getTypesCount() {
@@ -30,12 +40,14 @@ void Conveyor::launch() {
   for(int i = 0; i < Mmachines_count; ++i) {
     Mmachines[i].launch();
   }
-  pthread_join(*(Mprinter -> Mtid_p), NULL);
 }
 
 void Conveyor::printStatus() {
-  clearSreen();
+  std::string status;
   for(int i = 0; i < Mmachines_count; ++i) {
-    std::cout << "Machine #" << i << ": " << Mmachines[i].status() << std::endl;
+    status += "Machine #" + std::to_string(Mmachines[i].id()) + ": " + Mmachines[i].status() + "\n";
   }
+  status += ("\nOn work: " + std::to_string(Mworking_on_count) +
+             "\nFinished Devices: " + std::to_string(Mfinished_device_count) + "\n");
+  Mprinter -> print(status);
 }

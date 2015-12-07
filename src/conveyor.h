@@ -9,8 +9,9 @@ class Machine;
 class Conveyor {
   int Mtypes_count;
   int Mmachines_count;
+  int Mworking_on_count;
+  int Mfinished_device_count;
   Machine *Mmachines;
-  void clearSreen();
 public:
   Printer *Mprinter;
 
@@ -18,8 +19,10 @@ public:
 
   int getTypesCount();
   void printStatus();
+  void finish(int device);
   void parseTimeConfig(int **timeConfig);
   void launch();
+  void workOn(int device);
 };
 
 #endif
