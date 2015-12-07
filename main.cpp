@@ -6,13 +6,15 @@
 
 int main(int argc, char **argv) {
   if(argv[1] == NULL){
+    std::cout.flush();
     std::cout << "Program expect line.cnf as input\nExample:\n./a.out line.cnf\n";
     return 1;
   }
   std::ifstream infile(argv[1]);
   int N, M;
   infile >> N >> M;
-  std::cout << "N = " << N << "\nM = " << M;
+  std::cout.flush();
+  std::cout << "N = " << N << "\nM = " << M << std::endl;
 
   Conveyor *conveyor = new Conveyor(N, M);
 

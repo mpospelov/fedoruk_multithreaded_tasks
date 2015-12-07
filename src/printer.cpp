@@ -26,10 +26,9 @@ void *Printer::print_loop() {
   while(1){
     pthread_mutex_lock(Mcount_lock);
     if(!Mqueue.empty()){
-      std::cout << std::endl;
-      system("clear");
       std::cout.flush();
-      std::cout << Mqueue.front();
+      system("clear");
+      std::cout << std::endl << Mqueue.front() << std::endl;
       Mqueue.pop();
     }
     sleep(1);
