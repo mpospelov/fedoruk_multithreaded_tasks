@@ -6,6 +6,7 @@
 #include <iostream>
 #include <queue>
 #include <string>
+#include "patch.h"
 
 class Printer {
   pthread_attr_t *Mattr_p;

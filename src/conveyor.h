@@ -3,6 +3,7 @@
 
 #include "machine.h"
 #include "printer.h"
+#include "patch.h"
 
 class Machine;
 

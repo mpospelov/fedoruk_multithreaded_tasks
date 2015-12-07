@@ -6,7 +6,9 @@
 #include <iostream>
 #include <string>
 #include <queue>
+#include "patch.h"
 #include "conveyor.h"
+
 class Conveyor;
 
 class Machine {

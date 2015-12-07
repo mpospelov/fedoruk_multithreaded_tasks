@@ -72,6 +72,6 @@ void *Machine::loop_helper(void *context){
 };
 
 std::string Machine::status() {
-  return "Q: " + std::to_string(Mdevice_queue.size()) + " | "
-         "R: " + std::to_string(!Mdevice_queue.empty());
+  return "Q: " + patch::to_string(Mdevice_queue.size()) + " | "
+         "R: " + patch::to_string(!Mdevice_queue.empty());
 }

@@ -45,9 +45,9 @@ void Conveyor::launch() {
 void Conveyor::printStatus() {
   std::string status;
   for(int i = 0; i < Mmachines_count; ++i) {
-    status += "Machine #" + std::to_string(Mmachines[i].id()) + ": " + Mmachines[i].status() + "\n";
+    status += "Machine #" + patch::to_string(Mmachines[i].id()) + ": " + Mmachines[i].status() + "\n";
   }
-  status += ("\nOn work: " + std::to_string(Mworking_on_count) +
-             "\nFinished Devices: " + std::to_string(Mfinished_device_count) + "\n");
+  status += ("\nOn work: " + patch::to_string(Mworking_on_count) +
+             "\nFinished Devices: " + patch::to_string(Mfinished_device_count) + "\n");
   Mprinter -> print(status);
 }
