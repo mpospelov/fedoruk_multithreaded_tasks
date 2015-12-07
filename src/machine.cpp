@@ -58,8 +58,8 @@ void *Machine::loop(void) {
         Mconveyor -> finish(device);
       } else {
         Mnext_machine -> handle(device);
-        Mconveyor -> printStatus();
       }
+      Mconveyor -> printStatus();
     } else {
       sleep(1);
     }
