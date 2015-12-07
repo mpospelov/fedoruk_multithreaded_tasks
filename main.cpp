@@ -20,12 +20,11 @@ int main(int argc, char **argv) {
     timeConfig[i] = new int[M];
     for(int j = 0; j < M; ++j) {
       infile >> timeConfig[i][j];
-      std::cout << timeConfig[i][j] << ",";
     }
-    std::cout << std::endl;
   }
 
   conveyor -> parseTimeConfig(timeConfig);
   conveyor -> printStatus();
+  conveyor -> launch();
   return 0;
 }

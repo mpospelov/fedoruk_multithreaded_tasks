@@ -6,26 +6,36 @@ void Conveyor::clearSreen(){
   system("clear");
 }
 
-Conveyor::Conveyor(int Nmachines_count, int Ntypes_count) {
-  types_count = Ntypes_count;
-  machines_count = Nmachines_count;
-  machines = new Machine[machines_count];
+Conveyor::Conveyor(int machines_count, int types_count) {
+  Mprinter = new Printer;
+  Mtypes_count = types_count;
+  Mmachines_count = machines_count;
+  Mmachines = new Machine[Mmachines_count];
   for(int i = 0; i < machines_count; ++i){
-    machines[i].init(this);
+    Mmachines[i].init(this, i);
   }
 }
 
 int Conveyor::getTypesCount() {
-  return types_count;
+  return Mtypes_count;
 }
 
 void Conveyor::parseTimeConfig(int **config) {
+  for(int i = 0; i < Mmachines_count; ++i) {
+    Mmachines[i].setTimeConfig(config[i]);
+  }
 }
 
+void Conveyor::launch() {
+  for(int i = 0; i < Mmachines_count; ++i) {
+    Mmachines[i].launch();
+  }
+  pthread_join(*(Mprinter -> Mtid_p), NULL);
+}
 
 void Conveyor::printStatus() {
   clearSreen();
-  for(int i = 0; i < types_count; ++i) {
-    std::cout << "Type queue " << i << ": " << std::string(machines_count, '*') << std::endl;
+  for(int i = 0; i < Mmachines_count; ++i) {
+    std::cout << "Machine #" << i << ": " << Mmachines[i].status() << std::endl;
   }
 }
