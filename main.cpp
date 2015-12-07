@@ -1,5 +1,6 @@
 #include <fstream>
 #include <iostream>
+#include <pthread.h>
 #include "src/machine.h"
 #include "src/conveyor.h"
 
