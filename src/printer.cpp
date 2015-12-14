@@ -3,7 +3,7 @@
 Printer::Printer() {
   Mcount_lock = new pthread_mutex_t;
   Mqueue_lock = new pthread_mutex_t;
-
+  Mrunning = true;
   Mtid_p = new pthread_t;
   Mattr_p = new pthread_attr_t;
   pthread_attr_init(Mattr_p);
@@ -16,6 +16,14 @@ Printer::Printer() {
   }
 }
 
+void Printer::stop() {
+  Mrunning = false;
+}
+
+void Printer::wait() {
+  pthread_join(*Mtid_p, NULL);
+}
+
 void Printer::print(std::string value) {
   pthread_mutex_lock(Mcount_lock);
   Mqueue.push(value);
@@ -23,16 +31,18 @@ void Printer::print(std::string value) {
 }
 
 void *Printer::print_loop() {
-  while(1){
-    pthread_mutex_lock(Mcount_lock);
+  int fails_count = 0;
+  while((Mrunning && Mqueue.empty()) || fails_count < 10){
     if(!Mqueue.empty()){
+      fails_count = 0;
       std::cout.flush();
       system("clear");
       std::cout << std::endl << Mqueue.front() << std::endl;
       Mqueue.pop();
+    } else {
+      fails_count++;
     }
     sleep(1);
-    pthread_mutex_unlock(Mcount_lock);
   }
   return NULL;
 }

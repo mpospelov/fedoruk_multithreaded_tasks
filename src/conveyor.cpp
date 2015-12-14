@@ -1,5 +1,4 @@
 #include "conveyor.h"
-#include <iostream>
 
 Conveyor::Conveyor(int machines_count, int types_count) {
   Mworking_on_count = 0;
@@ -16,12 +15,36 @@ Conveyor::Conveyor(int machines_count, int types_count) {
   }
 }
 
+void Conveyor::writeResult(std::string log) {
+  Mresults.push_back(log);
+}
+
+void Conveyor::printResultsToData() {
+  std::ofstream data;
+  data.open ("data.txt");
+  for(std::vector<std::string>::iterator it = Mresults.begin(); it != Mresults.end(); ++it){
+    data << *it << std::endl;
+  }
+}
+
+void Conveyor::printResults() {
+  std::cout.flush();
+  std::cout << std::endl;
+  for(std::vector<std::string>::iterator it = Mresults.begin(); it != Mresults.end(); ++it){
+    std::cout.flush();
+    std::cout << std::endl;
+    std::cout << *it;
+  }
+  std::cout.flush();
+  std::cout << std::endl;
+}
+
 void Conveyor::workOn(int device) {
   Mworking_on_count ++;
   Mmachines[0].handle(device);
 }
 
-void Conveyor::finish(int device) {
+void Conveyor::finishDevice(int device) {
   Mworking_on_count --;
   Mfinished_device_count ++;
 }
@@ -50,4 +73,13 @@ void Conveyor::printStatus() {
   status += ("\nOn work: " + patch::to_string(Mworking_on_count) +
              "\nFinished Devices: " + patch::to_string(Mfinished_device_count) + "\n");
   Mprinter -> print(status);
+}
+
+void Conveyor::finish() {
+  for (int i = 0; i < Mmachines_count; ++i) {
+    Mmachines[i].stop();
+  }
+  Mprinter -> stop();
+  Mmachines[Mmachines_count - 1].wait();
+  Mprinter -> wait();
 }

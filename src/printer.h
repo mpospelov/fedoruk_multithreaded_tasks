@@ -12,7 +12,7 @@ class Printer {
   pthread_attr_t *Mattr_p;
   pthread_mutex_t *Mqueue_lock;
   pthread_mutex_t *Mcount_lock;
-
+  bool Mrunning;
   std::queue<std::string> Mqueue;
   void *print_loop();
   static void *print_loop_helper(void *context);
@@ -20,8 +20,9 @@ public:
   pthread_t *Mtid_p;
 
   Printer();
-
+  void stop();
   void print(std::string value);
+  void wait();
 };
 
 #endif

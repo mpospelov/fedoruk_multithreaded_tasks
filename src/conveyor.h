@@ -1,6 +1,11 @@
 #ifndef CONVEYOR_H_INCLUDED_
 #define CONVEYOR_H_INCLUDED_
 
+#include <vector>
+#include <iostream>
+#include <fstream>
+#include <chrono>
+#include <ctime>
 #include "machine.h"
 #include "printer.h"
 #include "patch.h"
@@ -12,6 +17,9 @@ class Conveyor {
   int Mmachines_count;
   int Mworking_on_count;
   int Mfinished_device_count;
+
+  std::vector<std::string> Mresults;
+
   Machine *Mmachines;
 public:
   Printer *Mprinter;
@@ -20,10 +28,14 @@ public:
 
   int getTypesCount();
   void printStatus();
-  void finish(int device);
+  void finishDevice(int device);
   void parseTimeConfig(int **timeConfig);
   void launch();
   void workOn(int device);
+  void writeResult(std::string log);
+  void printResults();
+  void printResultsToData();
+  void finish();
 };
 
 #endif

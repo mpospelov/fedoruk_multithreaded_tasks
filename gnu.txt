@@ -1,0 +1,26 @@
+#
+# Very simple Gantt Chart
+# Demonstrate using timecolumn(N,format) to plot time data from
+# multiple columns
+#
+set terminal x11
+
+set xdata time
+timeformat = "%H:%M:%S"
+
+set yrange [-1:]
+OneMonth = strptime("%S","1")
+set xtics OneMonth nomirror
+set xtics scale 2, 0.5
+set mxtics 4
+set ytics nomirror
+set grid x y
+unset key
+set title "{/=15 Simple Gantt Chart}\n\n{/:Bold Task start and end times in columns 2 and 3}"
+set border 3
+
+T(N) = timecolumn(N, timeformat)
+
+set style arrow 1 filled size screen 0.02, 15 fixed lt 3 lw 1.5
+
+plot "data.txt" using (T(2)) : ($0) : (T(3)-T(2)) : (0.0) : yticlabel(1) with vector as 1
