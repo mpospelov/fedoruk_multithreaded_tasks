@@ -16,7 +16,7 @@ set mxtics 4
 set ytics nomirror
 set grid x y
 unset key
-set title "{/=15 Simple Gantt Chart}\n\n{/:Bold Task start and end times in columns 2 and 3}"
+set title "{/=15 Simple Gantt Chart for Conveyor}"
 set border 3
 
 T(N) = timecolumn(N, timeformat)

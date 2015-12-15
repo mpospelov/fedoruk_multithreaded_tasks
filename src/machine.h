@@ -15,28 +15,33 @@ class Conveyor;
 class Machine {
   Conveyor *Mconveyor;
   pthread_t *Mtid_p;
-  pthread_mutex_t *Mdevice_lock;
   pthread_mutex_t *Mrunning_lock;
   pthread_mutex_t *Mqueue_lock;
+  pthread_cond_t *Mpush_in_queue;
   std::queue<int> Mdevice_queue;
-
   Machine *Mnext_machine;
+  Machine *Mprevious_machine;
 
   int *Mtimes_config;
   int Mtypes_count;
   int Mid;
   bool Mrunning;
+  bool Mdone;
 
   int timeForHandle(int device);
+  static const int EXIT_SIGNAL;
   bool isLast();
+  bool isFirst();
 public:
   Machine();
   void init(Conveyor *conveyor, int id);
   void setTimeConfig(int *timeConfig);
   void setNextMachine(Machine *machine);
+  void setPreviousMachine(Machine *machine);
   void handle(int device);
   void launch();
   void stop();
+  bool isDone();
   int id();
   std::string status();
   void wait();
