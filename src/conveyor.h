@@ -11,12 +11,14 @@
 #include "patch.h"
 
 class Machine;
+class Printer;
 
 class Conveyor {
   int Mtypes_count;
   int Mmachines_count;
   int Mworking_on_count;
   int Mfinished_device_count;
+  bool Mrunning;
 
   std::vector<std::string> Mresults;
 
@@ -36,6 +38,7 @@ public:
   void printResults();
   void printResultsToData();
   void finish();
+  bool isRun();
 };
 
 #endif

@@ -1,9 +1,12 @@
 #include "printer.h"
 
-Printer::Printer() {
-  Mcount_lock = new pthread_mutex_t;
+Printer::Printer(Conveyor *conveyor) {
+  Mconveyor = conveyor;
   Mqueue_lock = new pthread_mutex_t;
-  Mrunning = true;
+  Mpush_in_queue = new pthread_cond_t;
+  pthread_cond_init(Mpush_in_queue, NULL);
+  pthread_mutex_init(Mqueue_lock, NULL);
+
   Mtid_p = new pthread_t;
   Mattr_p = new pthread_attr_t;
   pthread_attr_init(Mattr_p);
@@ -16,34 +19,33 @@ Printer::Printer() {
   }
 }
 
-void Printer::stop() {
-  Mrunning = false;
-}
-
 void Printer::wait() {
   pthread_join(*Mtid_p, NULL);
 }
 
 void Printer::print(std::string value) {
-  pthread_mutex_lock(Mcount_lock);
+  pthread_mutex_lock(Mqueue_lock);
   Mqueue.push(value);
-  pthread_mutex_unlock(Mcount_lock);
+  pthread_mutex_unlock(Mqueue_lock);
+  pthread_cond_signal(Mpush_in_queue);
 }
 
 void *Printer::print_loop() {
-  int fails_count = 0;
-  while((Mrunning && Mqueue.empty()) || fails_count < 10){
-    if(!Mqueue.empty()){
-      fails_count = 0;
-      std::cout.flush();
-      system("clear");
-      std::cout << std::endl << Mqueue.front() << std::endl;
-      Mqueue.pop();
-    } else {
-      fails_count++;
-    }
-    sleep(1);
+  pthread_mutex_lock(Mqueue_lock);
+  while(1){
+    timespec timeout;
+    timeout.tv_sec = time(NULL) + 1;
+    timeout.tv_nsec = 0;
+    pthread_cond_timedwait(Mpush_in_queue, Mqueue_lock, &timeout);
+    if(!Mconveyor -> isRun() && Mqueue.empty()) break;
+    if(Mqueue.empty()) continue;
+    std::cout.flush();
+    system("clear");
+    std::cout << std::endl << Mqueue.front() << std::endl;
+    Mqueue.pop();
   }
+  pthread_mutex_unlock(Mqueue_lock);
+  std::cout << "Done!\n";
   return NULL;
 }
 

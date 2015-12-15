@@ -3,10 +3,11 @@
 Conveyor::Conveyor(int machines_count, int types_count) {
   Mworking_on_count = 0;
   Mfinished_device_count = 0;
-  Mprinter = new Printer;
+  Mprinter = new Printer(this);
   Mtypes_count = types_count;
   Mmachines_count = machines_count;
   Mmachines = new Machine[Mmachines_count];
+  Mrunning = true;
   for(int i = 0; i < machines_count; ++i){
     Mmachines[i].init(this, i);
   }
@@ -59,6 +60,10 @@ void Conveyor::parseTimeConfig(int **config) {
   }
 }
 
+bool Conveyor::isRun() {
+  return Mrunning;
+}
+
 void Conveyor::launch() {
   for(int i = 0; i < Mmachines_count; ++i) {
     Mmachines[i].launch();
@@ -79,7 +84,9 @@ void Conveyor::finish() {
   for (int i = 0; i < Mmachines_count; ++i) {
     Mmachines[i].stop();
   }
-  Mprinter -> stop();
-  Mmachines[Mmachines_count - 1].wait();
+  for (int i = 0; i < Mmachines_count; ++i) {
+    Mmachines[i].wait();
+  }
+  Mrunning = false;
   Mprinter -> wait();
 }
