@@ -36,5 +36,6 @@ int main(int argc, char **argv) {
   conveyor -> finish();
   conveyor -> printResults();
   conveyor -> printResultsToData();
+  system("gnuplot -geometry 1200x700  -persist gnu.txt");
   return 0;
 }
